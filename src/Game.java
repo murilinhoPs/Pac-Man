@@ -47,17 +47,6 @@ public class Game extends JPanel {
         setPreferredSize(dimensions);
         setBackground(Color.black);
         LoadImages();
-
-        // for (String rows : tileMap) {
-        //     System.out.println(" ");
-        //     System.out.println("Mapa: ");
-        //     char[] columns = rows.toCharArray();
-        //     for (char tile : columns) {
-        //         if (tile == 'X') {
-        //         }
-        //         System.out.print(tile);
-        //     }
-        // }
     }
 
     public void paintComponent(Graphics g) {
