@@ -59,26 +59,24 @@ public class Game extends JPanel {
                 char tile = tileMap[row].charAt(column);
                 int x = column * Constants.tileSize;
                 int y = row * Constants.tileSize;
-                if (tile == 'X') {
-                    g.drawImage(wallImage, x, y, Constants.tileSize, Constants.tileSize, null);
-                }
-                if (tile == 'P') {
-                    g.drawImage(pacmanRightImage, x, y, Constants.tileSize, Constants.tileSize, null);
-                }
-                if (tile == ' ') {
-                    g.drawImage(foodImage,  x + 14, y + 14, 4, 4, null);
-                }
-                if (tile == 'r') {
-                    g.drawImage(redGhostImage, x, y, Constants.tileSize, Constants.tileSize, null);
-                }
-                if (tile == 'b') {
-                    g.drawImage(blueGhostImage, x, y, Constants.tileSize, Constants.tileSize, null);
-                }
-                if (tile == 'o') {
-                    g.drawImage(orangeGhostImage, x, y, Constants.tileSize, Constants.tileSize, null);
-                }
-                if (tile == 'p') {
-                    g.drawImage(pinkGhostImage, x, y, Constants.tileSize, Constants.tileSize, null);
+                switch (tile) {
+                    case 'O' -> {
+                        continue;
+                    }
+                    case 'X' ->
+                        g.drawImage(wallImage, x, y, Constants.tileSize, Constants.tileSize, null);
+                    case 'P' ->
+                        g.drawImage(pacmanRightImage, x, y, Constants.tileSize, Constants.tileSize, null);
+                    case 'r' ->
+                        g.drawImage(redGhostImage, x, y, Constants.tileSize, Constants.tileSize, null);
+                    case 'b' ->
+                        g.drawImage(blueGhostImage, x, y, Constants.tileSize, Constants.tileSize, null);
+                    case 'o' ->
+                        g.drawImage(orangeGhostImage, x, y, Constants.tileSize, Constants.tileSize, null);
+                    case 'p' ->
+                        g.drawImage(pinkGhostImage, x, y, Constants.tileSize, Constants.tileSize, null);
+                    default ->
+                        g.drawImage(foodImage, x + 14, y + 14, 4, 4, null);
                 }
 
                 System.out.print(tile);
