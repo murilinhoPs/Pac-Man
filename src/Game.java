@@ -54,6 +54,13 @@ public class Game extends JPanel {
         draw(g2d);
     }
 
+    private void draw(Graphics2D g2d) {
+        g2d.drawImage(pacman.sprite, pacman.posX, pacman.posY, pacman.width, pacman.height, null);
+        drawGameObjects(g2d, walls);
+        drawGameObjects(g2d, ghosts);
+        drawFoods(g2d);
+    }
+    
     private void LoadMap() {
         walls = new HashSet<>();
         foods = new HashSet<>();
@@ -94,13 +101,6 @@ public class Game extends JPanel {
             case 'r', 'b', 'o', 'p' ->
                 ghosts.add(obj);
         }
-    }
-
-    private void draw(Graphics2D g2d) {
-        g2d.drawImage(pacman.sprite, pacman.posX, pacman.posY, pacman.width, pacman.height, null);
-        drawGameObjects(g2d, walls);
-        drawGameObjects(g2d, ghosts);
-        drawFoods(g2d);
     }
 
     private void drawFoods(Graphics2D g2d) {
