@@ -5,4 +5,5 @@ public class Constants {
     static int boardWidth = columns * tileSize;
     static int boardHeight = rows * tileSize;
     static int baseVelocity = 4;
+    static int FPS = 30;
 }

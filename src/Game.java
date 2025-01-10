@@ -50,7 +50,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         LoadImages();
         LoadMap();
 
-        gameLoop = new Timer(1000/30, this); // 30 fps, delay: 33.33 = 1000/30
+        gameLoop = new Timer(1000/Constants.FPS, this); // 30 fps, delay: 33.33 = 1000/30
         gameLoop.start();
     }
 
