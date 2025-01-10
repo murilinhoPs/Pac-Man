@@ -31,18 +31,18 @@ public class GameObject {
         switch (this.direction) {
             case 'U' -> {
                 this.velocityX = 0;
-                this.velocityY = -Constants.tileSize / 4;
+                this.velocityY = -Constants.tileSize / Constants.baseVelocity;
             }
             case 'D' -> {
                 this.velocityX = 0;
-                this.velocityY = Constants.tileSize / 4;
+                this.velocityY = Constants.tileSize / Constants.baseVelocity;
             }
             case 'L' -> {
-                this.velocityX = -Constants.tileSize / 4;
+                this.velocityX = -Constants.tileSize / Constants.baseVelocity;
                 this.velocityY = 0;
             }
             case 'R' -> {
-                this.velocityX = Constants.tileSize / 4;
+                this.velocityX = Constants.tileSize / Constants.baseVelocity;
                 this.velocityY = 0;
             }
         }
