@@ -64,17 +64,14 @@ public class Game extends JPanel {
                 int y = row * Constants.tileSize;
                 Image sprite = spriteMap.get(tile);
                 switch (tile) {
+                    case 'O' -> {
+                        continue;
+                    }
                     case 'X' ->
                         walls.add(new GameObject(sprite, x, y, Constants.tileSize, Constants.tileSize, x, y));
                     case 'P' ->
                         pacman = new GameObject(sprite, x, y, Constants.tileSize, Constants.tileSize, x, y);
-                    case 'r' ->
-                        ghosts.add(new GameObject(sprite, x, y, Constants.tileSize, Constants.tileSize, x, y));
-                    case 'b' ->
-                        ghosts.add(new GameObject(sprite, x, y, Constants.tileSize, Constants.tileSize, x, y));
-                    case 'o' ->
-                        ghosts.add(new GameObject(sprite, x, y, Constants.tileSize, Constants.tileSize, x, y));
-                    case 'p' ->
+                    case 'r', 'b', 'o', 'p' ->
                         ghosts.add(new GameObject(sprite, x, y, Constants.tileSize, Constants.tileSize, x, y));
                     default ->
                         foods.add(new GameObject(null, x + 14, y + 14, 4, 4, x, y));
