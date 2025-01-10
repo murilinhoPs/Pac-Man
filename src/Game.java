@@ -59,9 +59,10 @@ public class Game extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        // renderElements(g);
-        draw(g);
+        Graphics2D g2d = (Graphics2D) g;
+        draw(g2d);
     }
+    
 
     private void LoadMap() {
         walls = new HashSet<>();
@@ -94,18 +95,19 @@ public class Game extends JPanel {
         }
     }
 
-    private void draw(Graphics g) {
-        g.drawImage(pacman.sprite, pacman.posX, pacman.posY, pacman.width, pacman.height, null);
+    private void draw(Graphics2D g2d) {
+        g2d.drawImage(pacman.sprite, pacman.posX, pacman.posY, pacman.width, pacman.height, null);
 
         for (GameObject wall : walls) {
-            g.drawImage(wall.sprite, wall.posX, wall.posY, wall.width, wall.height, null);
+            g2d.drawImage(wall.sprite, wall.posX, wall.posY, wall.width, wall.height, null);
         }
         for (GameObject ghost : ghosts) {
-            g.drawImage(ghost.sprite, ghost.posX, ghost.posY, ghost.width, ghost.height, null);
+            g2d.drawImage(ghost.sprite, ghost.posX, ghost.posY, ghost.width, ghost.height, null);
         }
-        g.setColor(Color.WHITE);
+
+        g2d.setColor(Color.WHITE);
         for (GameObject food : foods) {
-            g.fillRect(food.posX, food.posY, food.width, food.height);
+            g2d.fillRect(food.posX, food.posY, food.width, food.height);
         }
     }
 
