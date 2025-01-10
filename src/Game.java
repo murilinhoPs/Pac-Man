@@ -1,24 +1,11 @@
 
 import java.awt.*;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import javax.swing.*;
 
 public class Game extends JPanel {
-
-    Dimension dimensions = new Dimension(Constants.boardWidth, Constants.boardHeight);
-
-    private Image wallImage;
-    private Image cherryImage;
-    private Image foodImage;
-    private Image blueGhostImage;
-    private Image orangeGhostImage;
-    private Image pinkGhostImage;
-    private Image redGhostImage;
-
-    private Image pacmanUpImage;
-    private Image pacmanDownImage;
-    private Image pacmanLeftImage;
-    private Image pacmanRightImage;
 
     private String[] tileMap = {
         "XXXXXXXXXXXXXXXXXXX",
@@ -44,12 +31,14 @@ public class Game extends JPanel {
         "XXXXXXXXXXXXXXXXXXX"
     };
 
+    private Map<Character, Image> spriteMap;
     private HashSet<GameObject> walls;
     private HashSet<GameObject> foods;
     private HashSet<GameObject> ghosts;
     private GameObject pacman;
 
     Game() {
+        Dimension dimensions = new Dimension(Constants.boardWidth, Constants.boardHeight);
         setPreferredSize(dimensions);
         setBackground(Color.black);
         LoadImages();
@@ -62,31 +51,31 @@ public class Game extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
         draw(g2d);
     }
-    
 
     private void LoadMap() {
         walls = new HashSet<>();
         foods = new HashSet<>();
-        ghosts = new HashSet<>();
+        ghosts = new HashSet<>(4);
 
         for (int row = 0; row < Constants.rows; row++) {
             for (int column = 0; column < Constants.columns; column++) {
                 char tile = tileMap[row].charAt(column);
                 int x = column * Constants.tileSize;
                 int y = row * Constants.tileSize;
+                Image sprite = spriteMap.get(tile);
                 switch (tile) {
                     case 'X' ->
-                        walls.add(new GameObject(wallImage, x, y, Constants.tileSize, Constants.tileSize, x, y));
+                        walls.add(new GameObject(sprite, x, y, Constants.tileSize, Constants.tileSize, x, y));
                     case 'P' ->
-                        pacman = new GameObject(pacmanRightImage, x, y, Constants.tileSize, Constants.tileSize, x, y);
+                        pacman = new GameObject(sprite, x, y, Constants.tileSize, Constants.tileSize, x, y);
                     case 'r' ->
-                        ghosts.add(new GameObject(redGhostImage, x, y, Constants.tileSize, Constants.tileSize, x, y));
+                        ghosts.add(new GameObject(sprite, x, y, Constants.tileSize, Constants.tileSize, x, y));
                     case 'b' ->
-                        ghosts.add(new GameObject(blueGhostImage, x, y, Constants.tileSize, Constants.tileSize, x, y));
+                        ghosts.add(new GameObject(sprite, x, y, Constants.tileSize, Constants.tileSize, x, y));
                     case 'o' ->
-                        ghosts.add(new GameObject(orangeGhostImage, x, y, Constants.tileSize, Constants.tileSize, x, y));
+                        ghosts.add(new GameObject(sprite, x, y, Constants.tileSize, Constants.tileSize, x, y));
                     case 'p' ->
-                        ghosts.add(new GameObject(pinkGhostImage, x, y, Constants.tileSize, Constants.tileSize, x, y));
+                        ghosts.add(new GameObject(sprite, x, y, Constants.tileSize, Constants.tileSize, x, y));
                     default ->
                         foods.add(new GameObject(null, x + 14, y + 14, 4, 4, x, y));
                 }
@@ -112,18 +101,26 @@ public class Game extends JPanel {
     }
 
     final void LoadImages() {
-        wallImage = new ImageIcon(getClass().getResource("resources/wall.png")).getImage();
-        cherryImage = new ImageIcon(getClass().getResource("resources/cherry.png")).getImage();
+        Image wallImage = new ImageIcon(getClass().getResource("resources/wall.png")).getImage();
+        Image cherryImage = new ImageIcon(getClass().getResource("resources/cherry.png")).getImage();
 
-        blueGhostImage = new ImageIcon(getClass().getResource("resources/blueGhost.png")).getImage();
-        orangeGhostImage = new ImageIcon(getClass().getResource("resources/orangeGhost.png")).getImage();
-        pinkGhostImage = new ImageIcon(getClass().getResource("resources/pinkGhost.png")).getImage();
-        redGhostImage = new ImageIcon(getClass().getResource("resources/redGhost.png")).getImage();
+        Image blueGhostImage = new ImageIcon(getClass().getResource("resources/blueGhost.png")).getImage();
+        Image orangeGhostImage = new ImageIcon(getClass().getResource("resources/orangeGhost.png")).getImage();
+        Image pinkGhostImage = new ImageIcon(getClass().getResource("resources/pinkGhost.png")).getImage();
+        Image redGhostImage = new ImageIcon(getClass().getResource("resources/redGhost.png")).getImage();
 
-        pacmanUpImage = new ImageIcon(getClass().getResource("resources/pacmanUp.png")).getImage();
-        pacmanDownImage = new ImageIcon(getClass().getResource("resources/pacmanDown.png")).getImage();
-        pacmanLeftImage = new ImageIcon(getClass().getResource("resources/pacmanLeft.png")).getImage();
-        pacmanRightImage = new ImageIcon(getClass().getResource("resources/pacmanRight.png")).getImage();
+        Image pacmanUpImage = new ImageIcon(getClass().getResource("resources/pacmanUp.png")).getImage();
+        Image pacmanDownImage = new ImageIcon(getClass().getResource("resources/pacmanDown.png")).getImage();
+        Image pacmanLeftImage = new ImageIcon(getClass().getResource("resources/pacmanLeft.png")).getImage();
+        Image pacmanRightImage = new ImageIcon(getClass().getResource("resources/pacmanRight.png")).getImage();
 
+        // Save initial sprites used on LoadingMap
+        spriteMap = new HashMap<>();
+        spriteMap.put('X', wallImage);
+        spriteMap.put('P', pacmanRightImage);
+        spriteMap.put('r', redGhostImage);
+        spriteMap.put('b', blueGhostImage);
+        spriteMap.put('o', orangeGhostImage);
+        spriteMap.put('p', pinkGhostImage);
     }
 }
