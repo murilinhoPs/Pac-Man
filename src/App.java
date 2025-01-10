@@ -11,6 +11,7 @@ public class App {
         Game game = new Game();
         jframe.add(game);
         jframe.pack();
+        game.requestFocus();
         jframe.setVisible(true);
     }
 }

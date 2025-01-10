@@ -1,14 +1,14 @@
 
 import java.awt.*;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.awt.event.*;
+import java.util.*;
 import javax.swing.*;
+import javax.swing.Timer;
 
-public class Game extends JPanel {
+//TODO: implements KeyListener in another file (organization)
+public class Game extends JPanel implements ActionListener, KeyListener {
 
-    private String[] tileMap = {
+    private final String[] tileMap = {
         "XXXXXXXXXXXXXXXXXXX",
         "X        X        X",
         "X XX XXX X XXX XX X",
@@ -38,12 +38,20 @@ public class Game extends JPanel {
     private Set<GameObject> ghosts;
     private GameObject pacman;
 
+    private Timer gameLoop;
+
     Game() {
-        Dimension dimensions = new Dimension(Constants.boardWidth, Constants.boardHeight);
-        setPreferredSize(dimensions);
+        setPreferredSize(new Dimension(Constants.boardWidth, Constants.boardHeight));
         setBackground(Color.black);
+
+        addKeyListener(this);
+        setFocusable(true);
+
         LoadImages();
         LoadMap();
+
+        gameLoop = new Timer(50, this);
+        gameLoop.start();
     }
 
     @Override
@@ -60,7 +68,12 @@ public class Game extends JPanel {
         drawGameObjects(g2d, ghosts);
         drawFoods(g2d);
     }
-    
+
+    private void move() {
+        pacman.posX += pacman.velocityX;
+        pacman.posY += pacman.velocityY;
+    }
+
     private void LoadMap() {
         walls = new HashSet<>();
         foods = new HashSet<>();
@@ -149,5 +162,36 @@ public class Game extends JPanel {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        move();
+        repaint();
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        System.err.println("KeyEvent: " + e.getKeyCode());
+
+        final int keyCode = e.getKeyCode();
+        switch (keyCode) {
+            case KeyEvent.VK_UP ->
+                pacman.updateMovement('U');
+            case KeyEvent.VK_DOWN ->
+                pacman.updateMovement('D');
+            case KeyEvent.VK_LEFT ->
+                pacman.updateMovement('L');
+            case KeyEvent.VK_RIGHT ->
+                pacman.updateMovement('R');
+        }
     }
 }
