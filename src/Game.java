@@ -98,10 +98,12 @@ public class Game extends JPanel {
 
     private void draw(Graphics2D g2d) {
         g2d.drawImage(pacman.sprite, pacman.posX, pacman.posY, pacman.width, pacman.height, null);
-
         drawGameObjects(g2d, walls);
         drawGameObjects(g2d, ghosts);
+        drawFoods(g2d);
+    }
 
+    private void drawFoods(Graphics2D g2d) {
         g2d.setColor(Color.WHITE);
         for (GameObject food : foods) {
             g2d.fillRect(food.posX, food.posY, food.width, food.height);
