@@ -1,5 +1,6 @@
 
 import java.awt.*;
+import java.util.HashSet;
 import javax.swing.*;
 
 public class Game extends JPanel {
@@ -43,49 +44,76 @@ public class Game extends JPanel {
         "XXXXXXXXXXXXXXXXXXX"
     };
 
+    private HashSet<GameObject> walls;
+    private HashSet<GameObject> foods;
+    private HashSet<GameObject> ghosts;
+    private GameObject pacman;
+
     Game() {
         setPreferredSize(dimensions);
         setBackground(Color.black);
         LoadImages();
+        LoadMap();
     }
 
+    @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        // draw(g);
+        // renderElements(g);
+    }
+
+    private void LoadMap() {
+        walls = new HashSet<>();
+        foods = new HashSet<>();
+        ghosts = new HashSet<>();
+
         for (int row = 0; row < Constants.rows; row++) {
-            System.out.println(" ");
-            System.out.println("Mapa: ");
             for (int column = 0; column < Constants.columns; column++) {
                 char tile = tileMap[row].charAt(column);
                 int x = column * Constants.tileSize;
                 int y = row * Constants.tileSize;
                 switch (tile) {
-                    case 'O' -> {
-                        continue;
-                    }
                     case 'X' ->
-                        g.drawImage(wallImage, x, y, Constants.tileSize, Constants.tileSize, null);
+                        walls.add(new GameObject(wallImage, x, y, Constants.tileSize, Constants.tileSize, x, y));
                     case 'P' ->
-                        g.drawImage(pacmanRightImage, x, y, Constants.tileSize, Constants.tileSize, null);
+                        pacman = new GameObject(pacmanRightImage, x, y, Constants.tileSize, Constants.tileSize, x, y);
                     case 'r' ->
-                        g.drawImage(redGhostImage, x, y, Constants.tileSize, Constants.tileSize, null);
+                        ghosts.add(new GameObject(redGhostImage, x, y, Constants.tileSize, Constants.tileSize, x, y));
                     case 'b' ->
-                        g.drawImage(blueGhostImage, x, y, Constants.tileSize, Constants.tileSize, null);
+                        ghosts.add(new GameObject(blueGhostImage, x, y, Constants.tileSize, Constants.tileSize, x, y));
                     case 'o' ->
-                        g.drawImage(orangeGhostImage, x, y, Constants.tileSize, Constants.tileSize, null);
+                        ghosts.add(new GameObject(orangeGhostImage, x, y, Constants.tileSize, Constants.tileSize, x, y));
                     case 'p' ->
-                        g.drawImage(pinkGhostImage, x, y, Constants.tileSize, Constants.tileSize, null);
+                        ghosts.add(new GameObject(pinkGhostImage, x, y, Constants.tileSize, Constants.tileSize, x, y));
                     default ->
-                        g.drawImage(foodImage, x + 14, y + 14, 4, 4, null);
+                        foods.add(new GameObject(foodImage, x + 14, y + 14, 4, 4, x, y));
                 }
-
                 System.out.print(tile);
             }
         }
     }
 
+    private void draw(Graphics g) {
+        g.drawImage(pacman.sprite, pacman.posX, pacman.posY, pacman.width, pacman.height, null);
+
+        for (GameObject wall : walls) {
+            g.drawImage(wall.sprite, wall.posX, wall.posY, wall.width, wall.height, null);
+        }
+        for (GameObject ghost : ghosts) {
+            g.drawImage(ghost.sprite, ghost.posX, ghost.posY, ghost.width, ghost.height, null);
+        }
+        // g.setColor(Color.WHITE);
+        // for (Block food : foods) {
+        //     g.fillRect(food.x, food.y, food.width, food.height);
+        //     g.drawImage(foodImage, x + 14, y + 14, 4, 4, null);
+        // }
+    }
+
     final void LoadImages() {
         wallImage = new ImageIcon(getClass().getResource("resources/wall.png")).getImage();
+        foodImage = new ImageIcon(getClass().getResource("resources/powerFood.png")).getImage();
+        cherryImage = new ImageIcon(getClass().getResource("resources/cherry.png")).getImage();
+
         blueGhostImage = new ImageIcon(getClass().getResource("resources/blueGhost.png")).getImage();
         orangeGhostImage = new ImageIcon(getClass().getResource("resources/orangeGhost.png")).getImage();
         pinkGhostImage = new ImageIcon(getClass().getResource("resources/pinkGhost.png")).getImage();
@@ -95,8 +123,6 @@ public class Game extends JPanel {
         pacmanDownImage = new ImageIcon(getClass().getResource("resources/pacmanDown.png")).getImage();
         pacmanLeftImage = new ImageIcon(getClass().getResource("resources/pacmanLeft.png")).getImage();
         pacmanRightImage = new ImageIcon(getClass().getResource("resources/pacmanRight.png")).getImage();
-        cherryImage = new ImageIcon(getClass().getResource("resources/cherry.png")).getImage();
-        foodImage = new ImageIcon(getClass().getResource("resources/powerFood.png")).getImage();
 
     }
 }
