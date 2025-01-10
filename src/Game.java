@@ -60,6 +60,7 @@ public class Game extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         // renderElements(g);
+        draw(g);
     }
 
     private void LoadMap() {
@@ -86,7 +87,7 @@ public class Game extends JPanel {
                     case 'p' ->
                         ghosts.add(new GameObject(pinkGhostImage, x, y, Constants.tileSize, Constants.tileSize, x, y));
                     default ->
-                        foods.add(new GameObject(foodImage, x + 14, y + 14, 4, 4, x, y));
+                        foods.add(new GameObject(null, x + 14, y + 14, 4, 4, x, y));
                 }
                 System.out.print(tile);
             }
@@ -102,16 +103,14 @@ public class Game extends JPanel {
         for (GameObject ghost : ghosts) {
             g.drawImage(ghost.sprite, ghost.posX, ghost.posY, ghost.width, ghost.height, null);
         }
-        // g.setColor(Color.WHITE);
-        // for (Block food : foods) {
-        //     g.fillRect(food.x, food.y, food.width, food.height);
-        //     g.drawImage(foodImage, x + 14, y + 14, 4, 4, null);
-        // }
+        g.setColor(Color.WHITE);
+        for (GameObject food : foods) {
+            g.fillRect(food.posX, food.posY, food.width, food.height);
+        }
     }
 
     final void LoadImages() {
         wallImage = new ImageIcon(getClass().getResource("resources/wall.png")).getImage();
-        foodImage = new ImageIcon(getClass().getResource("resources/powerFood.png")).getImage();
         cherryImage = new ImageIcon(getClass().getResource("resources/cherry.png")).getImage();
 
         blueGhostImage = new ImageIcon(getClass().getResource("resources/blueGhost.png")).getImage();
