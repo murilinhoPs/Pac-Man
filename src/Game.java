@@ -3,6 +3,7 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import javax.swing.*;
 
 public class Game extends JPanel {
@@ -32,9 +33,9 @@ public class Game extends JPanel {
     };
 
     private Map<Character, Image> spriteMap;
-    private HashSet<GameObject> walls;
-    private HashSet<GameObject> foods;
-    private HashSet<GameObject> ghosts;
+    private Set<GameObject> walls;
+    private Set<GameObject> foods;
+    private Set<GameObject> ghosts;
     private GameObject pacman;
 
     Game() {
@@ -49,6 +50,7 @@ public class Game extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
+        setupGameGraphics(g2d);
         draw(g2d);
     }
 
@@ -57,47 +59,64 @@ public class Game extends JPanel {
         foods = new HashSet<>();
         ghosts = new HashSet<>(4);
 
+        // Just to debug the tilemap
+        StringBuilder debug = new StringBuilder();
         for (int row = 0; row < Constants.rows; row++) {
             for (int column = 0; column < Constants.columns; column++) {
                 char tile = tileMap[row].charAt(column);
                 int x = column * Constants.tileSize;
                 int y = row * Constants.tileSize;
-                Image sprite = spriteMap.get(tile);
-                switch (tile) {
-                    case 'O' -> {
-                        continue;
-                    }
-                    case 'X' ->
-                        walls.add(new GameObject(sprite, x, y, Constants.tileSize, Constants.tileSize, x, y));
-                    case 'P' ->
-                        pacman = new GameObject(sprite, x, y, Constants.tileSize, Constants.tileSize, x, y);
-                    case 'r', 'b', 'o', 'p' ->
-                        ghosts.add(new GameObject(sprite, x, y, Constants.tileSize, Constants.tileSize, x, y));
-                    default ->
-                        foods.add(new GameObject(null, x + 14, y + 14, 4, 4, x, y));
-                }
-                System.out.print(tile);
+
+                createGameObject(tile, x, y);
+                debug.append(tile);
             }
+            debug.append('\n');
+        }
+        System.err.println(debug);
+    }
+
+    private void createGameObject(char tile, int x, int y) {
+        Image sprite = spriteMap.get(tile);
+
+        if (sprite == null) {
+            if (tile != 'O') {
+                foods.add(new GameObject(null, x + 14, y + 14, 4, 4, x, y));
+            }
+            return;
+        }
+
+        GameObject obj = new GameObject(sprite, x, y, Constants.tileSize, Constants.tileSize, x, y);
+        switch (tile) {
+            case 'X' ->
+                walls.add(obj);
+            case 'P' ->
+                pacman = obj;
+            case 'r', 'b', 'o', 'p' ->
+                ghosts.add(obj);
         }
     }
 
     private void draw(Graphics2D g2d) {
         g2d.drawImage(pacman.sprite, pacman.posX, pacman.posY, pacman.width, pacman.height, null);
 
-        for (GameObject wall : walls) {
-            g2d.drawImage(wall.sprite, wall.posX, wall.posY, wall.width, wall.height, null);
-        }
-        for (GameObject ghost : ghosts) {
-            g2d.drawImage(ghost.sprite, ghost.posX, ghost.posY, ghost.width, ghost.height, null);
-        }
+        drawGameObjects(g2d, walls);
+        drawGameObjects(g2d, ghosts);
 
         g2d.setColor(Color.WHITE);
         for (GameObject food : foods) {
             g2d.fillRect(food.posX, food.posY, food.width, food.height);
         }
+        g2d.dispose();
     }
 
-    final void LoadImages() {
+    private void drawGameObjects(Graphics2D g, Set<GameObject> objects) {
+        for (GameObject obj : objects) {
+            g.drawImage(obj.sprite, obj.posX, obj.posY,
+                    obj.width, obj.height, null);
+        }
+    }
+
+    private void LoadImages() {
         Image wallImage = new ImageIcon(getClass().getResource("resources/wall.png")).getImage();
         Image cherryImage = new ImageIcon(getClass().getResource("resources/cherry.png")).getImage();
 
@@ -119,5 +138,14 @@ public class Game extends JPanel {
         spriteMap.put('b', blueGhostImage);
         spriteMap.put('o', orangeGhostImage);
         spriteMap.put('p', pinkGhostImage);
+    }
+
+    private void setupGameGraphics(Graphics2D g2d) {
+        // Configuração ideal para jogos arcade
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
+
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
     }
 }
