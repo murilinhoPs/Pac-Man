@@ -38,7 +38,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     private Set<GameObject> ghosts;
     private GameObject pacman;
 
-    private Timer gameLoop;
+    private final Timer gameLoop;
 
     Game() {
         setPreferredSize(new Dimension(Constants.boardWidth, Constants.boardHeight));
@@ -50,7 +50,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         LoadImages();
         LoadMap();
 
-        gameLoop = new Timer(1000/Constants.FPS, this); // 30 fps, delay: 33.33 = 1000/30
+        gameLoop = new Timer(1000 / Constants.FPS, this); // 30 fps, delay: 33.33 milliseconds = 1000/30
         gameLoop.start();
     }
 
@@ -72,6 +72,45 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     private void move() {
         pacman.posX += pacman.velocityX;
         pacman.posY += pacman.velocityY;
+    }
+
+    /**
+     * inicio de Ax antes do final de Bx -> ax < de bx + bw <p>
+     * final de Ax depois de Bx -> ax + aw > bx
+     * <p>
+     * inicio de Ay acima do final de By -> ay acima < de by + bh <p>
+     * final de Ay abaixo de Bx -> a.posY + a.height > b.posY
+     */
+    private boolean hasCollision(final GameObject a, final GameObject b) {
+        return a.posX < b.posX + b.width
+                && a.posX + a.width > b.posX
+                && a.posY < b.posY + b.height
+                && a.posY + a.height > b.posY;
+    }
+
+    //region  Initialize game
+    private void LoadImages() {
+        Image wallImage = new ImageIcon(getClass().getResource("resources/wall.png")).getImage();
+        Image cherryImage = new ImageIcon(getClass().getResource("resources/cherry.png")).getImage();
+
+        Image blueGhostImage = new ImageIcon(getClass().getResource("resources/blueGhost.png")).getImage();
+        Image orangeGhostImage = new ImageIcon(getClass().getResource("resources/orangeGhost.png")).getImage();
+        Image pinkGhostImage = new ImageIcon(getClass().getResource("resources/pinkGhost.png")).getImage();
+        Image redGhostImage = new ImageIcon(getClass().getResource("resources/redGhost.png")).getImage();
+
+        Image pacmanUpImage = new ImageIcon(getClass().getResource("resources/pacmanUp.png")).getImage();
+        Image pacmanDownImage = new ImageIcon(getClass().getResource("resources/pacmanDown.png")).getImage();
+        Image pacmanLeftImage = new ImageIcon(getClass().getResource("resources/pacmanLeft.png")).getImage();
+        Image pacmanRightImage = new ImageIcon(getClass().getResource("resources/pacmanRight.png")).getImage();
+
+        // Save initial sprites used on LoadingMap
+        spriteMap = new HashMap<>();
+        spriteMap.put('X', wallImage);
+        spriteMap.put('P', pacmanRightImage);
+        spriteMap.put('r', redGhostImage);
+        spriteMap.put('b', blueGhostImage);
+        spriteMap.put('o', orangeGhostImage);
+        spriteMap.put('p', pinkGhostImage);
     }
 
     private void LoadMap() {
@@ -131,30 +170,6 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         }
     }
 
-    private void LoadImages() {
-        Image wallImage = new ImageIcon(getClass().getResource("resources/wall.png")).getImage();
-        Image cherryImage = new ImageIcon(getClass().getResource("resources/cherry.png")).getImage();
-
-        Image blueGhostImage = new ImageIcon(getClass().getResource("resources/blueGhost.png")).getImage();
-        Image orangeGhostImage = new ImageIcon(getClass().getResource("resources/orangeGhost.png")).getImage();
-        Image pinkGhostImage = new ImageIcon(getClass().getResource("resources/pinkGhost.png")).getImage();
-        Image redGhostImage = new ImageIcon(getClass().getResource("resources/redGhost.png")).getImage();
-
-        Image pacmanUpImage = new ImageIcon(getClass().getResource("resources/pacmanUp.png")).getImage();
-        Image pacmanDownImage = new ImageIcon(getClass().getResource("resources/pacmanDown.png")).getImage();
-        Image pacmanLeftImage = new ImageIcon(getClass().getResource("resources/pacmanLeft.png")).getImage();
-        Image pacmanRightImage = new ImageIcon(getClass().getResource("resources/pacmanRight.png")).getImage();
-
-        // Save initial sprites used on LoadingMap
-        spriteMap = new HashMap<>();
-        spriteMap.put('X', wallImage);
-        spriteMap.put('P', pacmanRightImage);
-        spriteMap.put('r', redGhostImage);
-        spriteMap.put('b', blueGhostImage);
-        spriteMap.put('o', orangeGhostImage);
-        spriteMap.put('p', pinkGhostImage);
-    }
-
     private void setupGameGraphics(Graphics2D g2d) {
         // Configuração ideal para jogos arcade
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
@@ -163,7 +178,9 @@ public class Game extends JPanel implements ActionListener, KeyListener {
 
         g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
     }
+    //endregion
 
+    //region Check Actions
     @Override
     public void actionPerformed(ActionEvent e) {
         move();
@@ -194,4 +211,5 @@ public class Game extends JPanel implements ActionListener, KeyListener {
                 pacman.updateMovement('R');
         }
     }
+    //endregion
 }
