@@ -1,14 +1,16 @@
 
 import java.awt.Image;
+import java.util.Set;
 
 public class GameObject {
+
+    private CollisionListener collisionListener;
 
     Image sprite;
     int posX, posY, width, height;
     int startX, startY;
-
-    int velocityX, velocityY = 0;
     char direction;
+    int velocityX, velocityY = 0;
 
     public GameObject(Image sprite, int posX, int posY, int width, int height, int startX, int startY) {
         this.sprite = sprite;
@@ -20,11 +22,27 @@ public class GameObject {
         this.startY = this.posY;
     }
 
-    public void updateMovement(char direction) {
+    public void setCollisionListener(CollisionListener listener) {
+        this.collisionListener = listener;
+    }
+
+    public void updateMovement(char direction, Set<GameObject> walls) {
+        char prevDirection = this.direction; // store current dir before changing it
         this.direction = direction;
         updateVelocity();
         this.posX += velocityX;
         this.posY += velocityY;
+        
+        var collidingObj = checkCollisions(walls);
+        if (collidingObj != null) {
+            this.posX -= this.velocityX;
+            this.posY -= this.velocityY;
+            this.direction = prevDirection;
+            if (collisionListener != null) {
+                collisionListener.onCollision(this, collidingObj);
+            }
+            updateVelocity();
+        }
     }
 
     private void updateVelocity() {
@@ -46,5 +64,14 @@ public class GameObject {
                 this.velocityY = 0;
             }
         }
+    }
+
+    private GameObject checkCollisions(Set<GameObject> walls) {
+        for (GameObject wall : walls) {
+            if (Utils.hasCollision(this, wall)) {
+                return wall;
+            }
+        }
+        return null;
     }
 }

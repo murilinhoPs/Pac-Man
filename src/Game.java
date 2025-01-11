@@ -6,7 +6,7 @@ import javax.swing.*;
 import javax.swing.Timer;
 
 //TODO: implements KeyListener in another file (organization)
-public class Game extends JPanel implements ActionListener, KeyListener {
+public class Game extends JPanel implements ActionListener, KeyListener, CollisionListener {
 
     private final String[] tileMap = {
         "XXXXXXXXXXXXXXXXXXX",
@@ -72,20 +72,14 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     private void move() {
         pacman.posX += pacman.velocityX;
         pacman.posY += pacman.velocityY;
-    }
-
-    /**
-     * inicio de Ax antes do final de Bx -> ax < de bx + bw <p>
-     * final de Ax depois de Bx -> ax + aw > bx
-     * <p>
-     * inicio de Ay acima do final de By -> ay acima < de by + bh <p>
-     * final de Ay abaixo de Bx -> a.posY + a.height > b.posY
-     */
-    private boolean hasCollision(final GameObject a, final GameObject b) {
-        return a.posX < b.posX + b.width
-                && a.posX + a.width > b.posX
-                && a.posY < b.posY + b.height
-                && a.posY + a.height > b.posY;
+      
+        for (GameObject wall : walls) {
+            if (Utils.hasCollision(pacman, wall)) {
+                pacman.posX -= pacman.velocityX;
+                pacman.posY -= pacman.velocityY;
+                return;
+            }
+        }
     }
 
     //region  Initialize game
@@ -148,8 +142,10 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         switch (tile) {
             case 'X' ->
                 walls.add(obj);
-            case 'P' ->
+            case 'P' -> {
                 pacman = obj;
+                pacman.setCollisionListener(this);
+            }
             case 'r', 'b', 'o', 'p' ->
                 ghosts.add(obj);
         }
@@ -197,19 +193,24 @@ public class Game extends JPanel implements ActionListener, KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-        System.err.println("KeyEvent: " + e.getKeyCode());
-
         final int keyCode = e.getKeyCode();
         switch (keyCode) {
             case KeyEvent.VK_UP ->
-                pacman.updateMovement('U');
+                pacman.updateMovement('U', walls);
             case KeyEvent.VK_DOWN ->
-                pacman.updateMovement('D');
+                pacman.updateMovement('D', walls);
             case KeyEvent.VK_LEFT ->
-                pacman.updateMovement('L');
+                pacman.updateMovement('L', walls);
             case KeyEvent.VK_RIGHT ->
-                pacman.updateMovement('R');
+                pacman.updateMovement('R', walls);
         }
     }
     //endregion
+
+    @Override
+    public void onCollision(GameObject obj, GameObject other) {
+        if (obj == pacman) {
+            System.out.println("Colisão detectada -> " + "pacman");
+        }
+    }
 }
