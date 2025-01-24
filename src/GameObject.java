@@ -32,17 +32,18 @@ public class GameObject {
         updateVelocity();
         this.posX += velocityX;
         this.posY += velocityY;
-        
+
         var collidingObj = checkCollisions(walls);
-        if (collidingObj != null) {
-            this.posX -= this.velocityX;
-            this.posY -= this.velocityY;
-            this.direction = prevDirection;
-            if (collisionListener != null) {
-                collisionListener.onCollision(this, collidingObj);
-            }
-            updateVelocity();
+        if (collidingObj == null) {
+            return;
         }
+        this.posX -= this.velocityX;
+        this.posY -= this.velocityY;
+        this.direction = prevDirection; //* sets the "new" direction to the old one to stop the movement
+                if (collisionListener != null) {
+            collisionListener.onCollision(this, collidingObj);
+        }
+        updateVelocity();
     }
 
     private void updateVelocity() {
